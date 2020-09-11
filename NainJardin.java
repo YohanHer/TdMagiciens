@@ -1,7 +1,7 @@
 public class NainJardin implements Victime{
     
-    int solidite;
-    String nom;
+    protected int solidite;
+    protected String nom;
     
     public NainJardin(String nom,int val){
         this.solidite = val;
