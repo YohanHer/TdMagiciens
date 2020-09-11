@@ -5,7 +5,7 @@ public class Main {
         table[0] = new Magicien("Gandalf", (int)(Math.random()*100));
         table[1] = new Sorcier("Dumbledore", (int)(Math.random()*100));
         table[2] = new Sorcier("Saroumane", (int)(Math.random()*100));
-        table[3] = new Sorcier("Radagast", (int)(Math.random()*100));
+        table[3] = new GnomeJardin("Radagast", (int)(Math.random()*100));
         table[4] = new Sorcier("Samantha", (int)(Math.random()*100));
         table[5] = new Monstre("Dracula", (int)(Math.random()*100));
         table[6] = new Monstre("Frankestein", (int)(Math.random()*100));
@@ -13,8 +13,17 @@ public class Main {
         table[8] = new Monstre("Glaurund", (int)(Math.random()*100));
         table[9] = new NainJardin("Corentin",(int)(Math.random()*100));
 
-        int morts=0;
-        while (morts<9 && !(queSorciers(table))){
+		int morts=0;
+		int nbrMagiques = compteMagiques(table);
+		if (nbrMagiques != 0){
+			System.out.println("Trop de magie !");
+			for (int i=0; i<10;i++){
+				if (!(table[i] instanceof SuperPouvoir) && table[i] instanceof Personnage){
+					((Personnage) table[i]).addVie(-1);
+				}
+			}
+		}
+        while (morts<9 && !(queSorciers(table)) && !(queNains(table))){
             for (int i = 0; i<10;i++){
                 System.out.println(table[i]);
             }
@@ -38,7 +47,12 @@ public class Main {
             System.out.println(table[i].getNom()+" a gagné !");
         }
         else{
-            System.out.println("Les sorciers ont gagné !");
+			if (queNains(table)){
+				System.out.println("Les nains ont gagné !");
+			}
+			else {
+				System.out.println("Les sorciers ont gagné !");
+			}
         }
     }
     public static int compteMorts(Victime[] table){
@@ -64,9 +78,29 @@ public class Main {
     public static boolean queSorciers(Victime[] table){
         int n = table.length;
         int i = 0;
-        while (i<n && table[i] instanceof Sorcier && !(table[i] instanceof Magicien) && !(table[i].mort())){
+        while (i<n && ((table[i] instanceof Sorcier && !(table[i] instanceof Magicien)) || (table[i].mort()))){
             i++;
         }
         return i==n;
     }
+
+    public static int compteMagiques(Victime[] table){
+        int n = table.length;
+        int compteur = 0;
+        for (int i=0;i<n;i++){
+			if (table[i] instanceof SuperPouvoir){
+				compteur++;
+			}
+		}
+		return compteur;
+	}
+	
+	public static boolean queNains(Victime[] table){
+		int n = table.length;
+        int i = 0;
+        while (i<n && (table[i] instanceof NainJardin || table[i].mort())){
+            i++;
+        }
+        return i==n;
+	}
 }
